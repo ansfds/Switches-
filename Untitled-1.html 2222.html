@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Switches</title>
+  <meta name="description" content="متجر احترافي لبيع قطع الكمبيوتر — كروت شاشة، رامات، معالجات، لوحات أم، تخزين..." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0f172a',
+            accent: '#0ea5a4'
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;}</style>
+
+  <style>
+    
+    /* Small custom styles */
+    .glass { backdrop-filter: blur(6px); background: rgba(255,255,255,0.06); }
+    .product-img { aspect-ratio: 4/3; object-fit: cover; border-radius: .5rem; }
+    
+    /* -------------------------------------- */
+    /* 🎨 كود CSS للشاشة المنبثقة الاحترافية 🎨 */
+    /* -------------------------------------- */
+    
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000; 
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.85); 
+        backdrop-filter: blur(3px); 
+        animation-name: fadein;
+        animation-duration: 0.3s;
+    }
+    
+    .modal-content-box {
+        background-color: #fefefe;
+        margin: 10vh auto; 
+        padding: 0; 
+        border-radius: 12px;
+        width: 95%; 
+        max-width: 1100px; 
+        box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        position: relative;
+        overflow: hidden; 
+    }
+
+    /* تقسيم المحتوى إلى عمودين (الصور والمعلومات) */
+    .product-details-container {
+        display: flex;
+        flex-direction: row-reverse; 
+        gap: 0;
+        min-height: 500px;
+    }
+
+    /* عمود الصور (في اليمين) */
+    .product-images-col {
+        flex: 1.5; 
+        position: relative;
+        overflow: hidden;
+        background-color: #f8f8f8;
+        padding: 1px;
+    }
+    
+    /* عمود المعلومات (في اليسار) */
+    .product-info-col {
+        flex: 1; 
+        padding: 30px;
+    }
+
+    /* شريط الصور (لتصفح الصور) */
+    .image-slider {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    .modal-product-img {
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain; 
+        border-radius: 6px;
+    }
+
+    /* أزرار التصفح */
+    .slider-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 12px;
+        cursor: pointer;
+        z-index: 20;
+        border-radius: 50%;
+        transition: background-color 0.3s;
+    }
+
+    .slider-btn:hover { background: #0ea5a4; }
+    .prev-btn { right: 10px; }
+    .next-btn { left: 10px; }
+
+    /* زر الإغلاق */
+    .close-modal-btn {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        color: #333;
+        font-size: 30px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 1050; 
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.3s;
+    }
+
+    .close-modal-btn:hover { color: #0ea5a4; }
+
+    @keyframes fadein {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    /* تعديل تنسيق الأعمدة للشاشات الصغيرة */
+    @media (max-width: 900px) {
+        .product-details-container {
+            flex-direction: column; 
+        }
+        .modal-content-box {
+            margin: 20px auto;
+        }
+        .product-images-col {
+            min-height: 300px;
+        }
+    }
+    
+    /* -------------------------------------- */
+    /* 🖼️ تصحيح الـ Hero Slider للصور العريضة 🖼️ */
+    /* -------------------------------------- */
+    #hero-slider-section {
+        /* إعطاء ارتفاع كبير للقسم بالكامل */
+        height: 20vh; 
+        min-height: 350px;
+        overflow: hidden;
+    }
+    #hero-slider-container {
+        height: 100%; /* يجب أن يشغل 100% من ارتفاع القسم */
+    }
+    .slider-item {
+        /* تثبيت العرض والارتفاع لكل شريحة */
+        width: 100%;
+        height: 100%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0; /* إزالة الـ padding لملء الشاشة */
+    }
+    .slider-item img {
+        /* جعل الصورة تغطي المساحة بالكامل */
+        width: 100%;
+        height: 100%;
+        object-fit: cover; 
+    }
+
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <header class="sticky top-0 z-40 bg-white/70 backdrop-blur glass border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-4">
+          <a href="#" class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-accent to-sky-600 rounded-lg flex items-center justify-center text-white font-bold"> <img src="https://qwertyqop.com/cdn/shop/files/individualswitch.png?v=1698726047" alt="شعار المتجر" class="logo"> </div>
+            <div class="text-lg font-semibold">Switches</div>
+          </a>
+          <nav class="hidden md:flex items-center gap-3 text-sm text-slate-600">
+            <a href="#products" class="hover:text-slate-900">المنتجات</a>
+            <a href="#brands" class="hover:text-slate-900">الماركات</a>
+            <a href="#about" class="hover:text-slate-900">من نحن</a>
+            <a href="#contact" class="hover:text-slate-900">تواصل معنا</a>
+          </nav>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <input id="search" type="search" placeholder="ابحث عن قطعة..." class="w-48 md:w-64 px-3 py-2 rounded-md border border-slate-200 focus:outline-none focus:ring-2 focus:ring-accent text-sm" />
+            <button id="clearSearch" class="absolute left-1 top-1/2 -translate-y-1/2 text-xs text-slate-500">مسح</button>
+          </div>
+          <button id="cartBtn" class="relative p-2 rounded-md hover:bg-slate-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 7h12l-2-7M9 21a1 1 0 100-2 1 1 0 000 2zm6 0a1 1 0 100-2 1 1 0 000 2z" />
+            </svg>
+            <span id="cartCount" class="absolute -top-1 -left-1 bg-red-500 text-white rounded-full w-5 h-5 text-[10px] flex items-center justify-center">0</span>
+          </button>
+          <a href="#login" class="hidden md:inline-block px-3 py-2 text-sm border border-slate-200 rounded-md">دخول / تسجيل</a>
+
+          <div class="md:hidden">
+            <button id="mobileMenuBtn" class="p-2 rounded-md hover:bg-slate-100">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobileNav" class="md:hidden hidden border-t border-slate-100">
+      <div class="px-4 py-3 flex flex-col gap-2">
+        <a href="#products" class="py-2">المنتجات</a>
+        <a href="#brands" class="py-2">الماركات</a>
+        <a href="#about" class="py-2">من نحن</a>
+        <a href="#contact" class="py-2">تواصل معنا</a>
+      </div>
+    </div>
+  </header>
+
+  <section id="hero-slider-section" class="w-full relative bg-slate-100">
+      <div id="hero-slider-container" class="flex transition-transform duration-700 ease-in-out">
+          
+          <div class="slider-item">
+              <img src="c:\Users\pc ans\Pictures\متجر سويتشز\Switches تسوق الأن مع.png" />
+          </div>
+          
+      <button onclick="moveSlider(-1)" class="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition z-10">&#10094;</button>
+      <button onclick="moveSlider(1)" class="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition z-10">&#10095;</button>
+
+  </section>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+      <div class="lg:col-span-2">
+        <h1 class="text-3xl sm:text-4xl font-extrabold">أفضل قطع الكمبيوتر لجمهور المحترفين والهواة</h1>
+        <p class="mt-4 text-slate-600">كروت شاشة، معالجات، رامات عالية الأداء، وحدات تخزين سريعة، وكل ما تحتاجه لتجميع جهازك المثالي — شحن آمن وخدمة دعم محلية.</p>
+        <div class="mt-6 flex gap-3">
+          <a href="#products" class="px-5 py-3 bg-accent text-white rounded-md font-semibold shadow">تسوق الآن</a>
+          <a href="#contact" class="px-5 py-3 border border-slate-200 rounded-md">اطلب استشارة مجانية</a>
+        </div>
+
+        <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm text-slate-700">
+          <div class="p-3 bg-white rounded-lg shadow-sm text-center">
+            <div class="font-semibold">شحن سريع</div>
+            <div class="text-slate-500">داخل ليبيا</div>
+          </div>
+          <div class="p-3 bg-white rounded-lg shadow-sm text-center">
+            <div class="font-semibold">ضمان جودة</div>
+            <div class="text-slate-500">استرجاع خلال 14 يوم</div>
+          </div>
+          <div class="p-3 bg-white rounded-lg shadow-sm text-center">
+            <div class="font-semibold">خدمة عملاء</div>
+            <div class="text-slate-500">دعم فني 24/7</div>
+          </div>
+          <div class="p-3 bg-white rounded-lg shadow-sm text-center">
+            <div class="font-semibold">طرق دفع</div>
+            <div class="text-slate-500">نقدًا / حوالة بنكية</div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="bg-white rounded-lg shadow p-4">
+        <div class="text-sm text-slate-500">عرض خاص</div>
+        <div class="mt-3 font-semibold">كيبورد + ماوس باد </div>
+        <div class="mt-2 text-slate-600">أحصل على ماوس باد مجاني عند شراء أي كيبورد</div>
+        <div class="mt-4">
+          
+        </div>
+      </aside>
+    </section>
+
+    <section id="products" class="mt-12">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-semibold">المنتجات</h2>
+        <div class="flex gap-2 items-center">
+          <select id="categoryFilter" class="px-3 py-2 border rounded-md text-sm">
+            <option value="all">جميع الأصناف</option>
+            <option value="gpu">كروت شاشة</option>
+            <option value="cpu">معالجات</option>
+            <option value="ram">رامات</option>
+            <option value="storage">تخزين</option>
+            <option value="keyboard">لوحات مفاتيح</option>
+            <option value="motherboard">لوحات أم</option>
+                        <option value="accessories">اكسسوارات</option>
+
+          </select>
+          <select id="sortBy" class="px-3 py-2 border rounded-md text-sm">
+            <option value="featured">الأهم</option>
+            <option value="priceAsc">السعر: الأقل أولاً</option>
+            <option value="priceDesc">السعر: الأعلى أولاً</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="productsGrid" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <article class="product-card bg-white p-4 rounded-lg shadow" data-category="gpu" data-price="820" data-id="p-4070ti">
+          <img src="https://cdn.cs.1worldsync.com/syndication/mediaserverredirect/f2ef14513657fa990b2f2c1ee01a6201/original.jpg" alt="GPU" class="product-img w-full" data-img-url="https://cdn.cs.1worldsync.com/syndication/mediaserverredirect/f2ef14513657fa990b2f2c1ee01a6201/original.jpg"/>
+          <h3 class="mt-3 font-semibold">GIGABYTE GeForce RTX 4070 Ti SUPER GAMING OC 16G( <span style="color:red;">غير متوفر</span>)</h3>
+          <div class="mt-1 text-slate-600">ذاكرة 16 جيجابايت GDDR6X</div>
+          <div class="mt-3 flex items-center justify-between">
+            <div class="text-lg font-bold">$820</div>
+            <div class="flex gap-2">
+              <button class="addToCartBtn px-3 py-1 rounded-md border text-sm">أضف للسلة</button>
+              <button onclick="openProductModal('p-4070ti')" class="viewBtn px-3 py-1 rounded-md bg-slate-100 text-sm">عرض</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card bg-white p-4 rounded-lg shadow" data-category="cpu" data-price="340" data-id="p-7800x3d">
+          <img src="https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2505503-ryzen-7-7800x3d-og.jpg" alt="CPU" class="product-img w-full" data-img-url="https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2505503-ryzen-7-7800x3d-og.jpg"/>
+          <h3 class="mt-3 font-semibold">AMD Ryzen™ 7 7800X3D ( <span style="color:red;">غير متوفر</span>)</h3>
+          <div class="mt-1 text-slate-600">8 أنوية، 16 خيط معالجة</div>
+          <div class="mt-3 flex items-center justify-between">
+            <div class="text-lg font-bold">$340</div>
+            <div class="flex gap-2">
+              <button class="addToCartBtn px-3 py-1 rounded-md border text-sm">أضف للسلة</button>
+              <button onclick="openProductModal('p-7800x3d')" class="viewBtn px-3 py-1 rounded-md bg-slate-100 text-sm">عرض</button>
+            </div>
+          </div>
+        </article>
+
+                <article class="product-card bg-white p-4 rounded-lg shadow" data-category="storage" data-category="used-open-box" data-price="25" data-id="p-Patriot">
+          <img src="https://aphnetworks.com/review/patriot-p300-512gb/008.jpg" alt="storage" class="product-img w-full" data-img-url="https://aphnetworks.com/review/patriot-p300-512gb/008.jpg"/>
+          <h3 class="mt-3 font-semibold"> ( <span style="color:rgb(37, 212, 21);">open Box - صندوق مفتوح</span>) Patriot P300 512GB Gen3×4 ( <span style="color:red;">غير متوفر</span>)</h3>
+          <div class="mt-1 text-slate-600">قرص تخزين SSD من نوع NVMe بسعة 512 جيجابايت.</div>
+          <div class="mt-3 flex items-center justify-between">
+            <div class="text-lg font-bold">$25</div>
+            <div class="flex gap-2">
+              <button class="addToCartBtn px-3 py-1 rounded-md border text-sm">أضف للسلة</button>
+              <button onclick="openProductModal('p-Patriot')" class="viewBtn px-3 py-1 rounded-md bg-slate-100 text-sm">عرض</button>
+            </div>
+          </div>
+        </article>
+        
+                <article class="product-card bg-white p-4 rounded-lg shadow" data-category="accessories" data-price="5" data-id="p-World Map Mouse Pad">
+          <img src="https://static-01.daraz.pk/p/98db95b156d0199b0221cd6f4dd68a68.jpg" alt="accessories" class="product-img w-full" data-img-url="https://static-01.daraz.pk/p/98db95b156d0199b0221cd6f4dd68a68.jpg"/>
+          <h3 class="mt-3 font-semibold">World Map Mouse Pad</h3>
+          <div class="mt-1 text-slate-600">ماوس باد خريطة العالم ( World Map Mouse Pad ) حجم : 30*80</div>
+          <div class="mt-3 flex items-center justify-between">
+            <div class="text-lg font-bold">$5</div>
+            <div class="flex gap-2">
+              <button class="addToCartBtn px-3 py-1 rounded-md border text-sm">أضف للسلة</button>
+              <button onclick="openProductModal('p-World Map Mouse Pad')" class="viewBtn px-3 py-1 rounded-md bg-slate-100 text-sm">عرض</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card bg-white p-4 rounded-lg shadow" data-category="keyboard" data-price="40" data-id="p-ldon">
+          <img src="https://sc04.alicdn.com/kf/H89febfedef004b448cc5096b2bbb6d6bE.jpg" alt="keyboard" class="product-img w-full" data-img-url="https://sc04.alicdn.com/kf/H89febfedef004b448cc5096b2bbb6d6bE.jpg"/>
+          <h3 class="mt-3 font-semibold">LDON Mide 68</h3>
+          <div class="mt-1 text-slate-600">سويتشات مغناطيسية Magnetic 8K نوع Sky Blue PRO بصوت هادي واستجابة 0.125ms ⚡</div>
+          <div class="mt-3 flex items-center justify-between">
+            <div class="text-lg font-bold">$40</div>
+            <div class="flex gap-2">
+              <button class="addToCartBtn px-3 py-1 rounded-md border text-sm">أضف للسلة</button>
+              <button onclick="openProductModal('p-ldon')" class="viewBtn px-3 py-1 rounded-md bg-slate-100 text-sm">عرض</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card bg-white p-4 rounded-lg shadow" data-category="cpu" data-price="230" data-id="p-9600x">
+          <img src="https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-5-9600x-og.jpg" alt="CPU" class="product-img w-full" data-img-url="https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-5-9600x-og.jpg"/>
+          <h3 class="mt-3 font-semibold">AMD Ryzen 5 9600X</h3>
+          <div class="mt-1 text-slate-600">8 أنوية، 16 خيط معالجة</div>
+          <div class="mt-3 flex items-center justify-between">
+            <div class="text-lg font-bold">$230</div>
+            <div class="flex gap-2">
+              <button class="addToCartBtn px-3 py-1 rounded-md border text-sm">أضف للسلة</button>
+              <button onclick="openProductModal('p-9600x')" class="viewBtn px-3 py-1 rounded-md bg-slate-100 text-sm">عرض</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card bg-white p-4 rounded-lg shadow" data-category="motherboard" data-price="230" data-id="p-b850m">
+          <img src="https://gamingpc.com.ua/image/cache/425x372-crop/9cef3a2a8cccf9957bca7b8bf1f7e930.webp" alt="motherboard" class="product-img w-full" data-img-url="https://gamingpc.com.ua/image/cache/425x372-crop/9cef3a2a8cccf9957bca7b8bf1f7e930.webp"/>
+          <h3 class="mt-3 font-semibold">ASUS TUF B850M-E WIFI </h3>
+          <div class="mt-1 text-slate-600">لوحة أم متطورة من العيار الثقيل </div>
+          <div class="mt-3 flex items-center justify-between">
+            <div class="text-lg font-bold">$230</div>
+            <div class="flex gap-2">
+              <button class="addToCartBtn px-3 py-1 rounded-md border text-sm">أضف للسلة</button>
+              <button onclick="openProductModal('p-b850m')" class="viewBtn px-3 py-1 rounded-md bg-slate-100 text-sm">عرض</button>
+            </div>
+          </div>
+        </article>
+
+                <article class="product-card bg-white p-4 rounded-lg shadow" data-category="motherboard" data-price="170" data-id="p-b550i">
+          <img src="https://www.eteknix.com/wp-content/uploads/2020/06/Gigabyte-B550I-AORUS-PRO-AX-Motherboard.jpg" alt="motherboard" class="product-img w-full" data-img-url="https://gamingpc.com.ua/image/cache/425x372-crop/9cef3a2a8cccf9957bca7b8bf1f7e930.webp"/>
+          <h3 class="mt-3 font-semibold">B550I AORUS PRO AX ( <span style="color:red;">غير متوفر</span>) </h3>
+          <div class="mt-1 text-slate-600">لوحة أم Mini-ITX </div>
+          <div class="mt-3 flex items-center justify-between">
+            <div class="text-lg font-bold">$170</div>
+            <div class="flex gap-2">
+              <button class="addToCartBtn px-3 py-1 rounded-md border text-sm">أضف للسلة</button>
+              <button onclick="openProductModal('p-b550i')" class="viewBtn px-3 py-1 rounded-md bg-slate-100 text-sm">عرض</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="product-card bg-white p-4 rounded-lg shadow" data-category="ram" data-price="145" data-id="p-ddr5-32">
+          <img src="https://shop.kingston.com/cdn/shop/products/FURY-BeastDDR5-RGB-ProductVideo-tn-1080p.jpg?v=1653608352" alt="motherboard" class="product-img w-full" data-img-url="https://shop.kingston.com/cdn/shop/products/FURY-BeastDDR5-RGB-ProductVideo-tn-1080p.jpg?v=1653608352"/>
+          <h3 class="mt-3 font-semibold">Kingston Fury 32GB DDR5 6000MHz( <span style="color:red;">غير متوفر</span>)</h3>
+          <div class="mt-1 text-slate-600">ذاكرة سريعة للألعاب والعمل الاحترافي</div>
+          <div class="mt-3 flex items-center justify-between">
+            <div class="text-lg font-bold">$145</div>
+            <div class="flex gap-2">
+              <button class="addToCartBtn px-3 py-1 rounded-md border text-sm">أضف للسلة</button>
+              <button onclick="openProductModal('p-ddr5-32')" class="viewBtn px-3 py-1 rounded-md bg-slate-100 text-sm">عرض</button>
+            </div>
+          </div>
+        </article>
+
+        
+        </div>
+    </section>
+
+    <section id="brands" class="mt-12">
+      <h2 class="text-xl font-semibold">الشركات المتعاونة</h2>
+      <div class="mt-4 grid grid-cols-3 sm:grid-cols-6 gap-4 items-center">
+        <div class="p-3 bg-white rounded shadow text-center text-sm">NVIDIA</div>
+        <div class="p-3 bg-white rounded shadow text-center text-sm">AMD</div>
+        <div class="p-3 bg-white rounded shadow text-center text-sm">Intel</div>
+        <div class="p-3 bg-white rounded shadow text-center text-sm">Kingston</div>
+        <div class="p-3 bg-white rounded shadow text-center text-sm">Corsair</div>
+        <div class="p-3 bg-white rounded shadow text-center text-sm">ASUS</div>
+      </div>
+    </section>
+
+    <section id="about" class="mt-12 bg-white rounded-lg p-6 shadow dark:bg-dark-card dark:text-white dark:shadow-md">
+      <h2 class="text-xl font-semibold">من نحن</h2>
+      <p class="mt-3 text-slate-600 dark:text-white\/70">Switches – سويتشز متجر متخصص في قطع الكمبيوتر — تأسس لخدمة المهتمين بالتجميع، صيانة، وترقيات الحواسيب. نركز على جودة المنتجات، خدمة سريعة، ومعلومات فنية واضحة لكل قطعة.</p>
+    </section>
+
+    <section id="contact" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+      <form id="contactForm" class="bg-white p-6 rounded-lg shadow dark:bg-dark-card dark:text-white dark:shadow-md">
+        <h3 class="font-semibold">تواصل معنا</h3>
+        <p class="mt-2 text-slate-600 dark:text-white\/70 text-sm">أرسل استفسار أو طلب—سنرد خلال يوم عمل واحد.</p>
+        <div class="mt-4 grid grid-cols-1 gap-3">
+          <input required placeholder="الاسم" class="px-3 py-2 border rounded-md dark:bg-dark-card\/50 dark:border-white\/20" />
+          <input required type="email" placeholder="الايميل" class="w-full px-3 py-2 border rounded-md dark:bg-dark-card\/50 dark:border-white\/20" />
+          <input placeholder="الهاتف (اختياري)" class="w-full px-3 py-2 border rounded-md dark:bg-dark-card\/50 dark:border-white\/20" />
+          <textarea required placeholder="نص الرسالة" class="w-full px-3 py-2 border rounded-md dark:bg-dark-card\/50 dark:border-white\/20" rows="4"></textarea>
+          <div class="flex gap-2">
+            <button class="px-4 py-2 bg-accent text-white rounded">إرسال</button>
+            <button type="reset" class="px-4 py-2 border rounded dark:border-white\/20">مسح</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="bg-white p-6 rounded-lg shadow dark:bg-dark-card dark:text-white dark:shadow-md">
+        <h3 class="font-semibold">معلومات التواصل</h3>
+        <ul class="mt-3 text-slate-600 dark:text-white\/70">
+          <li>📍 طرابلس، ليبيا</li>
+          <li>📞 1853169 - 093</li>
+          <li>✉️ info@z7-pc.ly</li>
+        </ul>
+
+        <div class="mt-6">
+          <h4 class="font-medium">ساعات العمل</h4>
+          <p class="text-sm text-slate-600 dark:text-white\/70">السبت - الخميس: 09:00 - 19:00</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <aside id="cartSidebar" class="fixed right-0 top-0 h-full w-80 transform translate-x-full transition-transform bg-white shadow-lg z-50 dark:bg-dark-bg dark:text-white">
+    <div class="p-4 border-b flex items-center justify-between dark:border-white\/20">
+      <div class="font-semibold">السلة</div>
+      <button id="closeCart" class="text-slate-500 dark:text-white\/70">إغلاق</button>
+    </div>
+    <div id="cartItems" class="p-4 overflow-auto h-[calc(100%-160px)]">
+      <div class="text-sm text-slate-500 dark:text-white\/70">السلة فارغة</div>
+    </div>
+    <div class="p-4 border-t dark:border-white\/20">
+      <div id="discountArea" class="hidden pb-2 border-b mb-2 dark:border-white\/20">
+        <div class="flex items-center justify-between text-sm text-red-500">
+          <span>خصم العرض (<span id="discountPercent">10</span>%)</span>
+          <span id="discountAmount">-$0.00</span>
+        </div>
+      </div>
+      <div class="flex items-center justify-between font-semibold">المجموع <span id="cartTotal">$0</span></div>
+      <div class="mt-3">
+        <button id="checkoutBtn" class="w-full px-4 py-2 bg-accent text-white rounded">أرسل الطلب الآن</button>
+      </div>
+    </div>
+  </aside>
+
+  <div id="checkoutModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 dark:bg-dark-card dark:text-white">
+      <div class="flex justify-between items-center border-b pb-3 mb-4 dark:border-white\/20">
+        <h3 class="text-xl font-bold">تأكيد وإرسال الطلب</h3>
+        <button id="closeModalBtn" class="text-slate-500 dark:text-white\/70">إغلاق</button>
+      </div>
+      <form id="orderForm" action="https://formsubmit.co/ans707kat@gmail.com" method="POST">
+        <input type="hidden" name="_subject" value="طلب متجر جديد من Switches">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="تفاصيل السلة" id="cartDetailsInput">
+
+        <div class="space-y-4">
+          <input required name="الاسم" type="text" placeholder="الاسم الكامل" class="w-full px-3 py-2 border rounded-md dark:bg-dark-card\/50 dark:border-white\/20" />
+          <input required name="رقم الهاتف" type="tel" placeholder="رقم الهاتف (للتواصل)" class="w-full px-3 py-2 border rounded-md dark:bg-dark-card\/50 dark:border-white\/20" />
+          <input required name="الموقع" type="text" placeholder="موقعك (المدينة/المنطقة)" class="w-full px-3 py-2 border rounded-md dark:bg-dark-card\/50 dark:border-white\/20" />
+          <textarea name="ملاحظات جانبية" placeholder="أضف أي ملاحظة جانبية (مثل تفاصيل العنوان الإضافية)" class="w-full px-3 py-2 border rounded-md dark:bg-dark-card\/50 dark:border-white\/20" rows="3"></textarea>
+        </div>
+        <p id="modalCartSummary" class="mt-4 text-sm text-center text-slate-600 dark:text-white\/70"></p>
+        <button type="submit" class="mt-4 w-full px-4 py-2 bg-accent text-white rounded font-semibold">تأكيد وإرسال الطلب الآن</button>
+      </form>
+    </div>
+  </div>
+
+
+  <div id="product-modal" class="modal">
+    <div class="modal-content-box">
+      <span class="close-modal-btn" onclick="closeProductModal()">&times;</span>
+      
+      <div class="product-details-container">
+        
+        <div class="product-images-col">
+          <div id="image-slider" class="image-slider">
+            <img src="https://via.placeholder.com/600x450/eee?text=Image+1" alt="صورة المنتج 1" class="modal-product-img">
+            <img src="https://via.placeholder.com/600x450/ddd?text=Image+2" alt="صورة المنتج 2" class="modal-product-img">
+          </div>
+          <button class="slider-btn prev-btn" onclick="changeImage(-1)">&#10094;</button>
+          <button class="slider-btn next-btn" onclick="changeImage(1)">&#10095;</button>
+        </div>
+        
+        <div class="product-info-col">
+          <h2 id="modal-product-name" class="text-3xl font-extrabold text-slate-900 mb-4">اسم المنتج</h2>
+          
+          <div class="mb-6">
+            <span class="text-xl font-bold text-red-600" id="modal-product-price">السعر: $000.00</span>
+          </div>
+
+          <div class="description mb-6">
+            <h3 class="text-lg font-semibold border-b pb-1 mb-2">المواصفات الأساسية:</h3>
+            <ul id="modal-product-specs" class="list-disc pr-5 text-slate-600 text-sm space-y-1">
+              <li>المواصفة ستظهر هنا...</li>
+            </ul>
+          </div>
+          
+          <p id="modal-product-details" class="text-sm text-slate-700 mb-6">الوصف التفصيلي للمنتج سيظهر في هذا المكان. يمكن أن يكون أطول ويحتوي على مزيد من المعلومات التقنية.</p>
+          
+          <button id="modal-add-to-cart-btn" class="w-full px-4 py-2 bg-accent text-white rounded-md font-semibold hover:bg-sky-600 transition-colors">أضف إلى السلة</button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <footer class="mt-12 bg-slate-900 text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div>
+        <div class="font-bold text-lg">Z7 PC Parts</div>
+        <div class="text-slate-300 text-sm mt-2">متجر مختص بقطع الكمبيوتر وخدمات التجميع والصيانة.</div>
+      </div>
+      <div>
+        <div class="font-semibold">روابط سريعة</div>
+        <ul class="mt-2 text-sm text-slate-300">
+          <li>المنتجات</li>
+          <li>المدونة</li>
+          <li>شروط الاستخدام</li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold">تابعنا</div>
+        <div class="flex gap-3 mt-2">
+          <a class="text-slate-300 text-sm">فيسبوك</a>
+          <a class="text-slate-300 text-sm">إنستغرام</a>
+          <a class="text-slate-300 text-sm">تيليجرام</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // --------------------------------------
+    // 🖥️ وظائف الشاشة المنبثقة 🖥️
+    // --------------------------------------
+
+    const PRODUCT_DATA = {
+        'p-4070ti': {
+            name: 'GIGABYTE GeForce RTX 4070 Ti SUPER',
+            price: 820,
+            description: 'ذاكرة 16 جيجابايت GDDR6X، مثالية للألعاب بدقة 4K والعمل الاحترافي في التصميم ثلاثي الأبعاد.',
+            specs: ['16GB GDDR6X', 'Boost Clock 2655 MHz', 'Interface PCI Express 4.0'],
+            images: [
+                'https://cdn.cs.1worldsync.com/syndication/mediaserverredirect/f2ef14513657fa990b2f2c1ee01a6201/original.jpg', 
+                'https://m.media-amazon.com/images/I/71R31z7iNGL.jpg', 
+                'https://www.gigabyte.com/FileUpload/Global/KeyFeature/2237/innergigabyte-image-1127.png'
+            ]
+        },
+        'p-7800x3d': {
+            name: 'AMD Ryzen™ 7 7800X3D',
+            price: 340,
+            description: 'المعالج الأفضل للألعاب حاليًا. يجمع بين الأداء القوي وكفاءة الطاقة بفضل تقنية 3D V-Cache.',
+            specs: ['8 Cores / 16 Threads', '5.0 GHz Max Boost', '96MB L3 Cache', '7 nm process'],
+            images: [
+                'https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2505503-ryzen-7-7800x3d-og.jpg',
+ 
+            ]
+        },
+                'p-World Map Mouse Pad': {
+            name: 'World Map Mouse Pa',
+            price: 5,
+            description: 'ماوس باد خريطة العالم ( World Map Mouse Pad ) حجم : 30*80.',
+            specs: ['سطح قماش ناعم', 'قاعدة مانعة للانزلاق', 'حواف مخيطة متينة', 'مقاوم للماء ويسهل تنظيفه'],
+            images: [
+                'https://m.media-amazon.com/images/I/81F9B+YPTeL.jpg',
+                'https://static-01.daraz.pk/p/98db95b156d0199b0221cd6f4dd68a68.jpg',
+                'https://m.media-amazon.com/images/I/71cIQMZIi5L.jpg'
+ 
+            ]
+        },
+        'p-ldon': {
+            name: 'LDON Mide 68 Mechanical Keyboard',
+            price: 40,
+            description: 'كيبورد ميكانيكي بحجم 65%، يتميز باستجابة فائقة السرعة بفضل السويتشات المغناطيسية.',
+            specs: ['68 Keys', 'Magnetic Sky Blue PRO Switches', '0.125ms Response Time', 'RGB Lighting'],
+            images: [
+                'https://s.alicdn.com/@sc04/kf/H0539a7bb225a40ee9632d7309fa6498et.jpg?avif=close&webp=close',
+                'https://s.alicdn.com/@sc04/kf/H381c0debded941d9a29ba06b76f13cebf.jpg?avif=close&webp=close',
+                'https://sc04.alicdn.com/kf/H89febfedef004b448cc5096b2bbb6d6bE.jpg'
+            ]
+        },
+        'p-9600x': { name: 'AMD Ryzen 5 9600X', price: 230, description: 'معالج ممتاز لتجميعات الميزانية المتوسطة.', specs: ['6 Cores / 12 Threads'], images: ['https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-5-9600x-og.jpg'] },
+        'p-b850m': { name: 'ASUS TUF B850M-E WIFI', price: 230, description: 'لوحة أم تدعم أحدث جيل من المعالجات والذاكرات.', specs: ['Chipset B850M', 'Wi-Fi 6', 'DDR5 Support'], images: ['https://gamingpc.com.ua/image/cache/425x372-crop/9cef3a2a8cccf9957bca7b8bf1f7e930.webp'] },
+        'p-ddr5-32': { name: 'Kingston Fury 32GB DDR5 6000MHz', price: 145, description: 'ذاكرة عشوائية عالية السرعة.', specs: ['32GB (2x16GB)', '6000MHz Speed', 'DDR5'], images: ['https://shop.kingston.com/cdn/shop/products/FURY-BeastDDR5-RGB-ProductVideo-tn-1080p.jpg?v=1653608352'] },
+        'p-b550i': { name: 'B550I AORUS PRO AX', price: 170, 
+        description: 'اللوحة B550I AORUS PRO AX وحش صغير يجمع القوة والاستقرار في حجم مدمج.', 
+        specs: ['Chipset B550i', 'Wi-Fi 6', 'DDR4'], 
+        images: [
+          'https://www.guru3d.com/data/publish/220/f338b5a4b42a4b7332d98f820a86c65faa65b4/img_0543.jpg',
+          'https://www.guru3d.com/data/publish/220/f338b5a4b42a4b7332d98f820a86c65faa65b4/img_0549.jpg',
+        'https://www.eteknix.com/wp-content/uploads/2020/06/Gigabyte-B550I-AORUS-PRO-AX-Motherboard.jpg',
+        
+        ] 
+      },
+      'p-Patriot': { name: 'Patriot P300 512GB Gen3×4', 
+      price: 25, description: 'قرص تخزين SSD من نوع NVMe بسعة 512 جيجابايت.', 
+      specs: ['512GB Capacity', 'NVMe PCIe Gen3x4', 'Read Speed up to 2100MB/s'], 
+      images: [
+        'https://aphnetworks.com/review/patriot-p300-512gb/008.jpg',
+        'https://powertech.com.co/Blog/wp-content/uploads/2024/10/Box-Front.jpeg',      
+      ] },
+    };
+
+    const productModal = document.getElementById('product-modal');
+    const slider = document.getElementById('image-slider');
+    const modalAddToCartBtn = document.getElementById('modal-add-to-cart-btn'); 
+    let currentImageIndex = 0;
+    let currentProductId = null; 
+    let currentImages = []; 
+
+    function addToCart(id, name, price, qty = 1) {
+        const existing = cart.find(i => i.id === id);
+        if (existing) {
+            existing.qty += qty;
+        } else {
+            cart.push({ id, name, price, qty });
+        }
+        updateCartCount();
+        updateCartUI();
+        document.getElementById('cartSidebar').style.transform = 'translateX(0)';
+    }
+
+    function openProductModal(productId) {
+        const product = PRODUCT_DATA[productId];
+        if (!product) return;
+        
+        currentProductId = productId; 
+        currentImages = product.images;
+        currentImageIndex = 0;
+
+        document.getElementById('modal-product-name').innerText = product.name;
+        document.getElementById('modal-product-price').innerText = `السعر: $${product.price.toFixed(2)}`;
+        document.getElementById('modal-product-details').innerText = product.description;
+
+        modalAddToCartBtn.onclick = function() {
+            addToCart(currentProductId, product.name, product.price, 1);
+            closeProductModal(); 
+        };
+
+        const specsList = document.getElementById('modal-product-specs');
+        specsList.innerHTML = '';
+        product.specs.forEach(spec => {
+            const li = document.createElement('li');
+            li.innerText = spec;
+            specsList.appendChild(li);
+        });
+        
+        slider.innerHTML = '';
+        product.images.forEach(imgUrl => {
+            const img = document.createElement('img');
+            img.src = imgUrl;
+            img.alt = product.name;
+            img.className = 'modal-product-img';
+            slider.appendChild(img);
+        });
+        updateSliderPosition();
+        productModal.style.display = 'block';
+    }
+
+    function closeProductModal() {
+        productModal.style.display = 'none';
+        currentImages = [];
+        currentProductId = null;
+        modalAddToCartBtn.onclick = null;
+    }
+
+    function changeImage(n) {
+        currentImageIndex += n;
+        if (currentImageIndex >= currentImages.length) {
+            currentImageIndex = 0;
+        } else if (currentImageIndex < 0) {
+            currentImageIndex = currentImages.length - 1;
+        }
+        updateSliderPosition();
+    }
+
+    function updateSliderPosition() {
+        const offset = currentImageIndex * 100;
+        slider.style.transform = `translateX(${offset}%)`;
+    }
+    
+    window.onclick = function(event) {
+        if (event.target == productModal) {
+            closeProductModal();
+        }
+    }
+    
+    // ------------------------------------------
+    // 🖼️ وظائف شريط الصور المتحرك (Hero Slider) 🖼️
+    // ------------------------------------------
+
+    const sliderContainer = document.getElementById('hero-slider-container');
+    const sliderSection = document.getElementById('hero-slider-section'); // القسم بأكمله
+    const sliderItems = document.querySelectorAll('.slider-item');
+    let currentIndex = 0;
+    const totalSlides = sliderItems.length;
+    let autoSlideInterval;
+
+    function updateSliderPositionHero() {
+        // يتم تطبيق التحريك على الكونتينر
+        const offset = -currentIndex * 100;
+        sliderContainer.style.transform = `translateX(${offset}%)`; 
+    }
+
+    function moveSlider(direction) {
+        // -1 تعني الانتقال إلى اليسار (الشريحة التالية في RTL)، 1 تعني الانتقال إلى اليمين (الشريحة السابقة في RTL)
+        currentIndex += direction; 
+
+        if (currentIndex >= totalSlides) {
+            currentIndex = 0; 
+        } else if (currentIndex < 0) {
+            currentIndex = totalSlides - 1; 
+        }
+        
+        updateSliderPositionHero();
+        resetAutoSlide();
+    }
+
+    function startAutoSlide() {
+        autoSlideInterval = setInterval(() => {
+            moveSlider(-1); 
+        }, 5000);
+    }
+
+    function resetAutoSlide() {
+        clearInterval(autoSlideInterval);
+        startAutoSlide();
+    }
+    
+    // --- وظائف اللمس/السحب ---
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const minSwipeDistance = 50; 
+
+    sliderSection.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        clearInterval(autoSlideInterval); // إيقاف التمرير التلقائي عند بدء اللمس
+    }, false);
+
+    sliderSection.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleGesture();
+        resetAutoSlide(); // إعادة تشغيل التمرير التلقائي
+    }, false);
+
+    function handleGesture() {
+        const diff = touchEndX - touchStartX;
+
+        if (Math.abs(diff) > minSwipeDistance) {
+            if (diff < 0) {
+                // سحب من اليمين إلى اليسار (الانتقال إلى الشريحة التالية)
+                moveSlider(-1);
+            } else {
+                // سحب من اليسار إلى اليمين (الانتقال إلى الشريحة السابقة)
+                moveSlider(1);
+            }
+        }
+    }
+
+    // ابدأ الحركة التلقائية عند تحميل الصفحة
+    startAutoSlide();
+    
+    // ------------------------------------------
+    // 🔄 وظائف الموقع العامة 🔄
+    // ------------------------------------------
+
+    document.getElementById('mobileMenuBtn').addEventListener('click', function(){
+      const m = document.getElementById('mobileNav'); m.classList.toggle('hidden');
+    });
+
+    const cartSidebar = document.getElementById('cartSidebar');
+    document.getElementById('cartBtn').addEventListener('click', () => {
+      cartSidebar.style.transform = 'translateX(0)';
+    });
+    document.getElementById('closeCart').addEventListener('click', () => {
+      cartSidebar.style.transform = 'translateX(100%)';
+    });
+
+    const productsGrid = document.getElementById('productsGrid');
+    const cards = Array.from(productsGrid.querySelectorAll('.product-card'));
+
+    function renderCards(list){
+      cards.forEach(c => c.style.display = list.includes(c) ? 'block' : 'none');
+    }
+
+    document.getElementById('categoryFilter').addEventListener('change', function(){
+      const val = this.value;
+      if(val === 'all') { renderCards(cards); return; }
+      renderCards(cards.filter(c => c.dataset.category === val));
+    });
+
+    document.getElementById('search').addEventListener('input', function(){
+      const q = this.value.trim().toLowerCase();
+      if(!q) return renderCards(cards);
+      renderCards(cards.filter(c => c.querySelector('h3').innerText.toLowerCase().includes(q)));
+    });
+    document.getElementById('clearSearch').addEventListener('click', function(){ document.getElementById('search').value=''; renderCards(cards); });
+
+    document.getElementById('sortBy').addEventListener('change', function(){
+      const val = this.value;
+      const container = productsGrid;
+      const sorted = [...cards].sort((a,b)=>{
+        const pa = Number(a.dataset.price), pb = Number(b.dataset.price);
+        if(val === 'priceAsc') return pa - pb;
+        if(val === 'priceDesc') return pb - pa;
+        return 0; 
+      });
+      container.innerHTML = '';
+      sorted.forEach(s => container.appendChild(s));
+    });
+
+    const cart = [];
+    function updateCartCount(){ document.getElementById('cartCount').innerText = cart.reduce((s,i)=>s+i.qty,0); }
+    function updateCartUI(){
+      const itemsWrap = document.getElementById('cartItems');
+      itemsWrap.innerHTML = '';
+      if(cart.length===0){ itemsWrap.innerHTML = '<div class="text-sm text-slate-500">السلة فارغة</div>'; document.getElementById('cartTotal').innerText = '$0'; return; }
+      let total = 0;
+      cart.forEach(it =>{
+        total += it.qty * it.price;
+        const el = document.createElement('div');
+        el.className = 'flex items-center justify-between gap-2 mb-3';
+        el.innerHTML = `<div class="text-sm"><div class="font-medium">${it.name}</div><div class="text-xs text-slate-500">${it.qty} × $${it.price}</div></div><div class="flex gap-2"><button data-id="${it.id}" class="dec text-sm px-2 py-1 border rounded">-</button><button data-id="${it.id}" class="inc text-sm px-2 py-1 border rounded">+</button></div>`;
+        itemsWrap.appendChild(el);
+      });
+      document.getElementById('cartTotal').innerText = '$' + total.toFixed(2);
+
+      itemsWrap.querySelectorAll('.inc').forEach(b=>b.addEventListener('click', e=>{
+        const id = e.currentTarget.dataset.id; cart.find(x=>x.id===id).qty++; updateCartCount(); updateCartUI();
+      }));
+      itemsWrap.querySelectorAll('.dec').forEach(b=>b.addEventListener('click', e=>{
+        const id = e.currentTarget.dataset.id; const item = cart.find(x=>x.id===id); item.qty--; if(item.qty<=0) cart.splice(cart.indexOf(item),1); updateCartCount(); updateCartUI();
+      }));
+    }
+
+    document.querySelectorAll('.addToCartBtn').forEach((btn, idx)=>{
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.product-card');
+        const id = card.dataset.id || ('p-card-' + idx); 
+        const name = card.querySelector('h3').innerText;
+        const price = Number(card.dataset.price);
+        
+        addToCart(id, name, price, 1);
+      });
+    });
+
+    document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+      if(cart.length===0) { alert('السلة فارغة'); return; }
+      alert('وصول لصفحة الدفع (نموذج) — استبدل هذا ببوابة الدفع الحقيقية.');
+    });
+
+    document.getElementById('contactForm').addEventListener('submit', function(e){ e.preventDefault(); alert('شكراً. تم استلام رسالتك — رداً سريعاً'); this.reset(); });
+
+  </script>
+</body>
+</html>
